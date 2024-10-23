@@ -68,15 +68,20 @@ const SubstitutionTable: React.FC = () => {
 
     const currentItem = data.substitution[currentPage];
 
+    const formatDate = (dateString: string) => {
+        const [day, month, year] = dateString.split('-');
+        return `${day}.${month}.${year}`;
+    };
+
     return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
-            <Card className="shadow-lg dark:bg-gray-800">
+            <Card className="shadow-lg dark:bg-transparent">
                 <CardHeader>
                     <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">Substitution Plan for {data.class}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Created at: {new Date(data.createdAt).toLocaleString()}</p>
-                    <p className="text-base sm:text-lg font-semibold mt-2 dark:text-white">Date: {currentItem.date}</p>
+                    <p className="text-base sm:text-lg font-semibold mt-2 dark:text-white">Date: {formatDate(currentItem.date)}</p>
                     <p className="text-base sm:text-lg font-semibold dark:text-white">Day: {currentItem.weekDay[1]}</p>
                 </CardContent>
             </Card>
