@@ -12,7 +12,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 
 interface SubstitutionItem {
     content: {
@@ -39,10 +39,10 @@ const SubstitutionTable: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
-    const { theme } = useTheme();
+    // const { theme } = useTheme();
 
     useEffect(() => {
-        fetch('http://10.0.1.6:5555/api')
+        fetch('http://10.0.0.50:5555/api')
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -80,7 +80,7 @@ const SubstitutionTable: React.FC = () => {
                     <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">Substitution Plan for {data.class}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Created at: {new Date(data.createdAt).toLocaleString()}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Last updated at: {new Date(data.createdAt).toLocaleString()}</p>
                     <p className="text-base sm:text-lg font-semibold mt-2 dark:text-white">Date: {formatDate(currentItem.date)}</p>
                     <p className="text-base sm:text-lg font-semibold dark:text-white">Day: {currentItem.weekDay[1]}</p>
                 </CardContent>

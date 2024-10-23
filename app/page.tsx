@@ -1,6 +1,6 @@
 // import { Button } from "../components/ui/button";
 import React from 'react';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 
 // const NewTable = dynamic(() => import('../components/newtable'), { ssr: false });
 
@@ -10,22 +10,22 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../components/ui/pagination";
+// import {
+//   Pagination,
+//   PaginationContent,
+//   PaginationEllipsis,
+//   PaginationItem,
+//   PaginationLink,
+//   PaginationNext,
+//   PaginationPrevious,
+// } from "../components/ui/pagination";
 
 import SubstitutionTable from '../components/SubstitutionTable';
 
 export default function Home() {
-  const sampleData = {
-    // Your sample data here
-  };
+  // const sampleData = {
+  //   // Your sample data here
+  // };
 
   return (
     <html lang="en de">
@@ -72,7 +72,7 @@ export default function Home() {
           {/* <Table /> */}
           {/* <Component end /> */}
           {/* <NewTable /> */}
-          <SubstitutionTable data={null} error={null} loading={false} />
+          <SubstitutionTable />
         </div>
       </body>
     </html>
