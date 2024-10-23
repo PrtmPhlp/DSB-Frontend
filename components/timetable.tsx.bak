@@ -1,0 +1,91 @@
+import React from "react";
+
+export default function Table() {
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const times = [
+    "8:00 AM",
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+  ];
+
+  // For demonstration, using a simple pattern for availability - alternating between available and unavailable.
+  // In a real application, this data would come from your backend or state management.
+  const isAvailable = (dayIndex: number, timeIndex: number): boolean =>
+    (dayIndex + timeIndex) % 2 === 0;
+
+  return (
+    <>
+      {/* Table */}
+      <div className="m-5">
+        <div className="w-full rounded-lg border overflow-auto">
+          {/* Mobile layout */}
+          <div className="md:hidden">
+            {days.map((day, dayIndex) => (
+              <div
+                key={dayIndex}
+                className="p-4 border-t border-gray-200 dark:border-gray-800"
+              >
+                <h3 className="font-bold text-lg mb-2">{day}</h3>
+                {times.map((time, timeIndex) => (
+                  <div key={timeIndex} className="flex justify-between py-1">
+                    <span>{time}</span>
+                    <span>
+                      {isAvailable(dayIndex, timeIndex)
+                        ? "Available"
+                        : "Unavailable"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          {/* Desktop layout */}
+          <div className="hidden md:block">
+            <div className="w-full overflow-auto rounded-lg border">
+              <div className="grid w-full grid-cols-6 font-medium text-sm leading-none border-t border-gray-200 last:border-b dark:border-gray-800">
+                <div className="flex items-center justify-center p-4 border-r border-gray-200 dark:border-gray-800">
+                  <span className="font-normal">Time</span>
+                </div>
+                {days.map((day, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-center p-4 border-r border-gray-200 dark:border-gray-800"
+                  >
+                    <span className="font-normal">{day}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="grid w-full grid-cols-6 items-stretch">
+                {times.map((time, timeIndex) => (
+                  <React.Fragment key={timeIndex}>
+                    <div className="flex items-center justify-center p-4 border-t border-gray-200 dark:border-gray-800">
+                      <span className="font-medium">{time}</span>
+                    </div>
+                    {days.map((day, dayIndex) => (
+                      <div
+                        key={dayIndex}
+                        className="flex items-center justify-center p-4 border-t border-gray-200 dark:border-gray-800"
+                      >
+                        <span className="font-medium">
+                          {isAvailable(dayIndex, timeIndex)
+                            ? "Available"
+                            : "Unavailable"}
+                        </span>
+                      </div>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
