@@ -11,6 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface SubstitutionItem {
   content: {
@@ -51,9 +52,9 @@ const SubstitutionTable: React.FC = () => {
       });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!data) return <div>No data available</div>;
+  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (error) return <Alert variant="destructive"><AlertDescription>Error: {error}</AlertDescription></Alert>;
+  if (!data) return <Alert><AlertDescription>No data available</AlertDescription></Alert>;
 
   const handlePrevious = () => {
     setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
@@ -66,42 +67,17 @@ const SubstitutionTable: React.FC = () => {
   const currentItem = data.substitution[currentPage];
 
   return (
-    <div className="space-y-4">
-      <Card>
+    <div className="space-y-6 p-6 max-w-4xl mx-auto">
+      <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Substitution Plan for {data.class}</CardTitle>
+          <CardTitle className="text-2xl font-bold">Substitution Plan for {data.class}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Created at: {new Date(data.createdAt).toLocaleString()}</p>
-          <p>Date: {currentItem.date}</p>
-          <p>Day: {currentItem.weekDay[1]}</p>
+          <p className="text-sm text-gray-500">Created at: {new Date(data.createdAt).toLocaleString()}</p>
+          <p className="text-lg font-semibold mt-2">Date: {currentItem.date}</p>
+          <p className="text-lg font-semibold">Day: {currentItem.weekDay[1]}</p>
         </CardContent>
       </Card>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Position</TableHead>
-            <TableHead>Subject</TableHead>
-            <TableHead>Teacher</TableHead>
-            <TableHead>Room</TableHead>
-            <TableHead>Topic</TableHead>
-            <TableHead>Info</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {currentItem.content.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{item.position}</TableCell>
-              <TableCell>{item.subject}</TableCell>
-              <TableCell>{item.teacher}</TableCell>
-              <TableCell>{item.room}</TableCell>
-              <TableCell>{item.topic}</TableCell>
-              <TableCell>{item.info}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
 
       <Pagination>
         <PaginationContent>
@@ -123,6 +99,37 @@ const SubstitutionTable: React.FC = () => {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
+
+      {currentItem.content.length === 0 ? (
+        <Alert>
+          <AlertDescription>No substitutions for this day.</AlertDescription>
+        </Alert>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Position</TableHead>
+              <TableHead>Subject</TableHead>
+              <TableHead>Teacher</TableHead>
+              <TableHead>Room</TableHead>
+              <TableHead>Topic</TableHead>
+              <TableHead>Info</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {currentItem.content.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.position}</TableCell>
+                <TableCell>{item.subject}</TableCell>
+                <TableCell>{item.teacher}</TableCell>
+                <TableCell>{item.room}</TableCell>
+                <TableCell>{item.topic}</TableCell>
+                <TableCell>{item.info}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 };
