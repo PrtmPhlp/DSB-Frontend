@@ -47,7 +47,7 @@ export default function Home() {
                 Vertretungsplan
               </h1>
               <p className="text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                Vertretungsplan für <b className="dark:text-gray-300">MSS11</b>.
+                Vertretungsplan für <b className="dark:text-gray-300">MSS12</b>.
               </p>
             </div>
           </div>
