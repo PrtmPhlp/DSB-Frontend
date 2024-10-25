@@ -41,7 +41,7 @@ export default function Home() {
         )}
       >
         <div>
-          <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
+          {/* <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
             <div>
               <h1 className="text-3xl sm:text-4xl tracking-tighter md:text-5xl font-bold text-black text-center dark:text-white">
                 Vertretungsplan
@@ -50,7 +50,7 @@ export default function Home() {
                 Vertretungsplan für <b className="dark:text-gray-300">MSS12</b>.
               </p>
             </div>
-          </div>
+          </div> */}
           {/* <Pagination>
             <PaginationContent>
               <PaginationItem>

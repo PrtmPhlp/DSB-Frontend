@@ -42,7 +42,7 @@ const SubstitutionTable: React.FC = () => {
     // const { theme } = useTheme();
 
     useEffect(() => {
-        fetch('http://10.0.0.50:5555/api')
+        fetch('http://10.0.1.6:5555/api')
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -75,14 +75,23 @@ const SubstitutionTable: React.FC = () => {
 
     return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+            <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
+                <div>
+                    <h1 className="text-3xl sm:text-4xl tracking-tighter md:text-5xl font-bold text-black text-center dark:text-white">
+                        Vertretungsplan
+                    </h1>
+                    <p className="text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                        Vertretungsplan für <b className="dark:text-gray-300">{data.class}</b>.
+                    </p>
+                </div>
+            </div>
+
             <Card className="shadow-lg dark:bg-transparent">
                 <CardHeader>
-                    <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">Substitution Plan for {data.class}</CardTitle>
+                    <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">{currentItem.weekDay[1]}, {formatDate(currentItem.date)}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Last updated at: {new Date(data.createdAt).toLocaleString()}</p>
-                    <p className="text-base sm:text-lg font-semibold mt-2 dark:text-white">Date: {formatDate(currentItem.date)}</p>
-                    <p className="text-base sm:text-lg font-semibold dark:text-white">Day: {currentItem.weekDay[1]}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}</p>
                 </CardContent>
             </Card>
 
