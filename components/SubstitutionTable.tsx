@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { Terminal } from "lucide-react"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
@@ -11,7 +12,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 // import { useTheme } from "next-themes";
 
 interface SubstitutionItem {
@@ -54,9 +55,50 @@ const SubstitutionTable: React.FC = () => {
             });
     }, []);
 
-    if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    if (error) return <Alert variant="destructive"><AlertDescription>Error: {error}</AlertDescription></Alert>;
-    if (!data) return <Alert><AlertDescription>No data available</AlertDescription></Alert>;
+    const headerContent = (
+        <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
+            <div>
+                <h1 className="text-3xl sm:text-4xl tracking-tighter md:text-5xl font-bold text-black text-center dark:text-white">
+                    Vertretungsplan
+                </h1>
+                <p className="text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                    Vertretungsplan für <b className="dark:text-gray-300">
+                        {loading || error ? "..." : (data ? data.class : "unbekannt")}
+                    </b>
+                </p>
+            </div>
+        </div>
+    );
+
+    if (loading) return (
+        <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+            {headerContent}
+            <Alert>
+                <AlertDescription>Loading...</AlertDescription>
+            </Alert>
+        </div>
+    );
+
+    if (error) return (
+        <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+            {headerContent}
+            <Alert variant="destructive">
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                    {error}
+                </AlertDescription>
+            </Alert>
+
+        </div>
+    );
+
+    if (!data) return (
+        <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+            {headerContent}
+            <Alert><AlertDescription>No data available</AlertDescription></Alert>
+        </div>
+    );
 
     const handlePrevious = () => {
         setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
@@ -75,23 +117,23 @@ const SubstitutionTable: React.FC = () => {
 
     return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
-            <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
-                <div>
-                    <h1 className="text-3xl sm:text-4xl tracking-tighter md:text-5xl font-bold text-black text-center dark:text-white">
-                        Vertretungsplan
-                    </h1>
-                    <p className="text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                        Vertretungsplan für <b className="dark:text-gray-300">{data.class}</b>.
-                    </p>
-                </div>
-            </div>
+            {headerContent}
 
             <Card className="shadow-lg dark:bg-transparent">
                 <CardHeader>
-                    <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">{currentItem.weekDay[1]}, {formatDate(currentItem.date)}</CardTitle>
+                    <div className="flex justify-between items-center">
+                        <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">
+                            {currentItem.weekDay[1]}, {formatDate(currentItem.date)}
+                        </CardTitle>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            {currentItem.content.length} Einträge
+                        </span>
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}
+                    </p>
                 </CardContent>
             </Card>
 
@@ -99,20 +141,37 @@ const SubstitutionTable: React.FC = () => {
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
-                            <PaginationPrevious onClick={handlePrevious} />
+                            <PaginationPrevious onClick={handlePrevious} className="select-none">
+                                Zurück
+                            </PaginationPrevious>
                         </PaginationItem>
-                        {data.substitution.map((_, index) => (
-                            <PaginationItem key={index} className="hidden sm:inline-block">
-                                <PaginationLink
-                                    onClick={() => setCurrentPage(index)}
-                                    isActive={currentPage === index}
-                                >
-                                    {index + 1}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
+                        {data.substitution.map((_, index) => {
+                            const isMobile = window.innerWidth <= 768; // Assuming 768px as the breakpoint for mobile
+
+                            if (!isMobile || index < 4) {
+                                return (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() => setCurrentPage(index)}
+                                            isActive={currentPage === index}
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                );
+                            } else if (isMobile && index === 4) {
+                                return (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink>...</PaginationLink>
+                                    </PaginationItem>
+                                );
+                            }
+                            return null;
+                        })}
                         <PaginationItem>
-                            <PaginationNext onClick={handleNext} />
+                            <PaginationNext onClick={handleNext} className="select-none">
+                                Weiter
+                            </PaginationNext>
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
@@ -120,18 +179,18 @@ const SubstitutionTable: React.FC = () => {
 
             {currentItem.content.length === 0 ? (
                 <Alert>
-                    <AlertDescription>No substitutions for this day.</AlertDescription>
+                    <AlertDescription>Keine Vertretungen für {data.class}</AlertDescription>
                 </Alert>
             ) : (
                 <div className="overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow className="hover:bg-transparent">
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Position</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Subject</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Teacher</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Room</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Topic</TableHead>
+                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Stunde</TableHead>
+                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Fach</TableHead>
+                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Lehrer</TableHead>
+                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Raum</TableHead>
+                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Art</TableHead>
                                 <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Info</TableHead>
                             </TableRow>
                         </TableHeader>
