@@ -1,5 +1,6 @@
 "use client";
 
+// import { TextEffect } from '@/components/TextEffect';
 import React, { useEffect, useState } from 'react';
 import { Terminal } from "lucide-react"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -62,9 +63,9 @@ const SubstitutionTable: React.FC = () => {
                 <h1 className="text-3xl sm:text-4xl tracking-tighter md:text-5xl font-bold text-black text-center dark:text-white">
                     Vertretungsplan
                 </h1>
-                <p className="text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                <p className={`text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400 ${!loading && !error && data ? 'visible' : 'invisible'}`}>
                     Vertretungsplan für <b className="dark:text-gray-300">
-                        {loading || error ? "..." : (data ? data.class : "unbekannt")}
+                        {data?.class}
                     </b>
                 </p>
             </div>
