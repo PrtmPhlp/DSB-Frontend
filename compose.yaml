@@ -1,6 +1,6 @@
 services:
   dsb-frontend:
-    container_name: webpage
+    container_name: dsb-frontend
     image: ghcr.io/prtmphlp/dsb-frontend:latest
     build:
       dockerfile: ./Dockerfile

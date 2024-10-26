@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/pagination";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 // import { useTheme } from "next-themes";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface SubstitutionItem {
     content: {
@@ -70,9 +71,24 @@ const SubstitutionTable: React.FC = () => {
         </div>
     );
 
+    const CardSkeleton = () => (
+        <Card className="shadow-lg dark:bg-transparent">
+            <CardHeader>
+                <div className="flex justify-between items-center">
+                    <Skeleton className="h-8 w-2/3" />
+                    <Skeleton className="h-4 w-20" />
+                </div>
+            </CardHeader>
+            <CardContent>
+                <Skeleton className="h-4 w-3/4" />
+            </CardContent>
+        </Card>
+    );
+
     if (loading) return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
             {headerContent}
+            <CardSkeleton />
             <Alert>
                 <AlertDescription>Loading...</AlertDescription>
             </Alert>
@@ -119,23 +135,25 @@ const SubstitutionTable: React.FC = () => {
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
             {headerContent}
 
-            <Card className="shadow-lg dark:bg-transparent">
-                <CardHeader>
-                    <div className="flex justify-between items-center">
-                        <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">
-                            {currentItem.weekDay[1]}, {formatDate(currentItem.date)}
-                        </CardTitle>
-                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            {currentItem.content.length} Einträge
-                        </span>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}
-                    </p>
-                </CardContent>
-            </Card>
+            {loading ? <CardSkeleton /> : (
+                <Card className="shadow-lg dark:bg-transparent">
+                    <CardHeader>
+                        <div className="flex justify-between items-center">
+                            <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">
+                                {currentItem.weekDay[1]}, {formatDate(currentItem.date)}
+                            </CardTitle>
+                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                {currentItem.content.length} Einträge
+                            </span>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}
+                        </p>
+                    </CardContent>
+                </Card>
+            )}
 
             <div className="overflow-x-auto">
                 <Pagination>
