@@ -1,5 +1,5 @@
 services:
-  pertermann.de:
+  dsb-frontend:
     container_name: webpage
     image: ghcr.io/prtmphlp/dsb-frontend:latest
     build:
