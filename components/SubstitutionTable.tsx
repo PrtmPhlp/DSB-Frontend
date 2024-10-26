@@ -1,6 +1,6 @@
 "use client";
 
-// import { TextEffect } from '@/components/TextEffect';
+import { TextShimmer } from '@/components/TextShimmer';
 import React, { useEffect, useState } from 'react';
 import { Terminal } from "lucide-react"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -14,8 +14,8 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-// import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface SubstitutionItem {
     content: {
@@ -40,10 +40,8 @@ interface SubstitutionData {
 const SubstitutionTable: React.FC = () => {
     const [data, setData] = useState<SubstitutionData | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
     const [showSkeleton, setShowSkeleton] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
-    // const { theme } = useTheme();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,10 +49,8 @@ const SubstitutionTable: React.FC = () => {
                 const response = await fetch('http://10.0.1.6:5555/api');
                 const result = await response.json();
                 setData(result);
-                setLoading(false);
             } catch (error) {
                 setError((error as Error).message);
-                setLoading(false);
             }
         };
 
@@ -75,13 +71,24 @@ const SubstitutionTable: React.FC = () => {
                     Vertretungsplan
                 </h1>
                 {showSkeleton ? (
-                    <Skeleton className="h-6 w-48 mx-auto mt-2" />
+                    <Skeleton className={cn("h-6 w-48 mx-auto mt-2", "dark:bg-neutral-800")} />
                 ) : (
-                    <p className={`text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400 ${!error && data ? 'visible' : 'invisible'}`}>
-                        Vertretungsplan für <b className="dark:text-gray-300">
-                            {data?.class}
-                        </b>
-                    </p>
+                    <div className={`text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400 ${error || data ? 'visible' : 'invisible'}`}>
+                        {error ? (
+                            <TextShimmer
+                                duration={1.2}
+                                className='text-xl font-medium [--base-color:theme(colors.red.600)] [--base-gradient-color:theme(colors.red.200)] dark:[--base-color:theme(colors.red.700)] dark:[--base-gradient-color:theme(colors.red.400)]'
+                            >
+                                konnte nicht geladen werden
+                            </TextShimmer>
+                        ) : (
+                            <>
+                                Vertretungsplan für <b className="dark:text-gray-300">
+                                    {data?.class}
+                                </b>
+                            </>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
@@ -91,12 +98,12 @@ const SubstitutionTable: React.FC = () => {
         <Card className="shadow-lg dark:bg-transparent">
             <CardHeader>
                 <div className="flex justify-between items-center">
-                    <Skeleton className="h-8 w-2/3" />
-                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className={cn("h-8 w-2/3", "dark:bg-neutral-800")} />
+                    <Skeleton className={cn("h-4 w-20", "dark:bg-neutral-800")} />
                 </div>
             </CardHeader>
             <CardContent>
-                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className={cn("h-4 w-3/4", "dark:bg-neutral-800")} />
             </CardContent>
         </Card>
     );
@@ -105,9 +112,9 @@ const SubstitutionTable: React.FC = () => {
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
             {headerContent}
             <CardSkeleton />
-            <Alert>
+            {/* <Alert>
                 <AlertDescription>Loading...</AlertDescription>
-            </Alert>
+            </Alert> */}
         </div>
     );
 
@@ -121,7 +128,6 @@ const SubstitutionTable: React.FC = () => {
                     {error}
                 </AlertDescription>
             </Alert>
-
         </div>
     );
 
@@ -180,7 +186,7 @@ const SubstitutionTable: React.FC = () => {
                             </PaginationPrevious>
                         </PaginationItem>
                         {data.substitution.map((_, index) => {
-                            const isMobile = window.innerWidth <= 768; // Assuming 768px as the breakpoint for mobile
+                            const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
                             if (!isMobile || index < 4) {
                                 return (
@@ -219,24 +225,28 @@ const SubstitutionTable: React.FC = () => {
                 <div className="overflow-x-auto">
                     <Table>
                         <TableHeader>
-                            <TableRow className="hover:bg-transparent">
+                            <TableRow className="hover:bg-transparent dark:border-neutral-400">
                                 <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Stunde</TableHead>
                                 <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Fach</TableHead>
                                 <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Lehrer</TableHead>
                                 <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Raum</TableHead>
                                 <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Art</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Info</TableHead>
+                                {currentItem.content.some(item => item.info) && (
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Info</TableHead>
+                                )}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {currentItem.content.map((item, index) => (
-                                <TableRow key={index} className="hover:bg-transparent">
+                                <TableRow key={index} className="hover:bg-transparent dark:border-neutral-700">
                                     <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.position}</TableCell>
                                     <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.subject}</TableCell>
                                     <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.teacher}</TableCell>
                                     <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.room}</TableCell>
                                     <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.topic}</TableCell>
-                                    <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.info}</TableCell>
+                                    {item.info && (
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.info}</TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>
