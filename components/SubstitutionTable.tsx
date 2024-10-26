@@ -41,20 +41,31 @@ const SubstitutionTable: React.FC = () => {
     const [data, setData] = useState<SubstitutionData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showSkeleton, setShowSkeleton] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
     // const { theme } = useTheme();
 
     useEffect(() => {
-        fetch('http://10.0.1.6:5555/api')
-            .then(response => response.json())
-            .then(data => {
-                setData(data);
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://10.0.1.6:5555/api');
+                const result = await response.json();
+                setData(result);
                 setLoading(false);
-            })
-            .catch(error => {
-                setError(error.message);
+            } catch (error) {
+                setError((error as Error).message);
                 setLoading(false);
-            });
+            }
+        };
+
+        // Hide the skeleton after 500ms
+        const timer = setTimeout(() => {
+            setShowSkeleton(false);
+        }, 200);
+
+        fetchData();
+
+        return () => clearTimeout(timer);
     }, []);
 
     const headerContent = (
@@ -63,11 +74,15 @@ const SubstitutionTable: React.FC = () => {
                 <h1 className="text-3xl sm:text-4xl tracking-tighter md:text-5xl font-bold text-black text-center dark:text-white">
                     Vertretungsplan
                 </h1>
-                <p className={`text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400 ${!loading && !error && data ? 'visible' : 'invisible'}`}>
-                    Vertretungsplan für <b className="dark:text-gray-300">
-                        {data?.class}
-                    </b>
-                </p>
+                {showSkeleton ? (
+                    <Skeleton className="h-6 w-48 mx-auto mt-2" />
+                ) : (
+                    <p className={`text-gray-500 text-lg text-center mt-2 md:text-xl/relaxed xl:text-xl/relaxed dark:text-gray-400 ${!error && data ? 'visible' : 'invisible'}`}>
+                        Vertretungsplan für <b className="dark:text-gray-300">
+                            {data?.class}
+                        </b>
+                    </p>
+                )}
             </div>
         </div>
     );
@@ -86,7 +101,7 @@ const SubstitutionTable: React.FC = () => {
         </Card>
     );
 
-    if (loading) return (
+    if (showSkeleton) return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
             {headerContent}
             <CardSkeleton />
@@ -136,7 +151,7 @@ const SubstitutionTable: React.FC = () => {
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
             {headerContent}
 
-            {loading ? <CardSkeleton /> : (
+            {showSkeleton ? <CardSkeleton /> : (
                 <Card className="shadow-lg dark:bg-transparent">
                     <CardHeader>
                         <div className="flex justify-between items-center">
