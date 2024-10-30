@@ -138,6 +138,14 @@ const SubstitutionTable: React.FC = () => {
         return () => clearTimeout(timer);
     }, [token]);
 
+    const handleLogout = () => {
+        setToken(null);
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+        setUsername('');
+        setPassword('');
+    };
+
     const headerContent = (
         <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
             <div>
@@ -267,106 +275,143 @@ const SubstitutionTable: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
-            {headerContent}
+        <>
+            <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+                {headerContent}
 
-            {showSkeleton ? <CardSkeleton /> : (
-                <Card className="shadow-lg dark:bg-transparent">
-                    <CardHeader>
-                        <div className="flex justify-between items-center">
-                            <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">
-                                {currentItem.weekDay[1]}, {formatDate(currentItem.date)}
-                            </CardTitle>
-                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                {currentItem.content.length} Einträge
-                            </span>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}
-                        </p>
-                    </CardContent>
-                </Card>
-            )}
-
-            <div className="overflow-x-auto">
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious onClick={handlePrevious} className="select-none">
-                                Zurück
-                            </PaginationPrevious>
-                        </PaginationItem>
-                        {data.substitution.map((_, index) => {
-                            const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-
-                            if (!isMobile || index < 4) {
-                                return (
-                                    <PaginationItem key={index}>
-                                        <PaginationLink
-                                            onClick={() => setCurrentPage(index)}
-                                            isActive={currentPage === index}
-                                        >
-                                            {index + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                );
-                            } else if (isMobile && index === 4) {
-                                return (
-                                    <PaginationItem key={index}>
-                                        <PaginationLink>...</PaginationLink>
-                                    </PaginationItem>
-                                );
-                            }
-                            return null;
-                        })}
-                        <PaginationItem>
-                            <PaginationNext onClick={handleNext} className="select-none">
-                                Weiter
-                            </PaginationNext>
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            </div>
-
-            {currentItem.content.length === 0 ? (
-                <Alert>
-                    <AlertDescription>Keine Vertretungen für {data.class}</AlertDescription>
-                </Alert>
-            ) : (
+                {showSkeleton ? <CardSkeleton /> : (
+                    <Card className="shadow-lg dark:bg-transparent">
+                        <CardHeader>
+                            <div className="flex justify-between items-center">
+                                <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white">
+                                    {currentItem.weekDay[1]}, {formatDate(currentItem.date)}
+                                </CardTitle>
+                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {currentItem.content.length} Einträge
+                                </span>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Letzte Aktualisierung: {new Date(data.createdAt).toLocaleString()}
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
+                {/* <Button
+                    variant="outline"
+                    onClick={handleLogout}
+                    className="absolute top-4 right-4"
+                >Logout</Button> */}
                 <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="hover:bg-transparent dark:border-neutral-400">
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Stunde</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Fach</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Lehrer</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Raum</TableHead>
-                                <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Art</TableHead>
-                                {currentItem.content.some(item => item.info) && (
-                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Info</TableHead>
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {currentItem.content.map((item, index) => (
-                                <TableRow key={index} className="hover:bg-transparent dark:border-neutral-700">
-                                    <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.position}</TableCell>
-                                    <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.subject}</TableCell>
-                                    <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.teacher}</TableCell>
-                                    <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.room}</TableCell>
-                                    <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.topic}</TableCell>
-                                    {item.info && (
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.info}</TableCell>
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious onClick={handlePrevious} className="select-none">
+                                    Zurück
+                                </PaginationPrevious>
+                            </PaginationItem>
+                            {data.substitution.map((_, index) => {
+                                const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
+                                if (!isMobile || index < 4) {
+                                    return (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink
+                                                onClick={() => setCurrentPage(index)}
+                                                isActive={currentPage === index}
+                                            >
+                                                {index + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    );
+                                } else if (isMobile && index === 4) {
+                                    return (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink>...</PaginationLink>
+                                        </PaginationItem>
+                                    );
+                                }
+                                return null;
+                            })}
+                            <PaginationItem>
+                                <PaginationNext onClick={handleNext} className="select-none">
+                                    Weiter
+                                </PaginationNext>
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+
+                {currentItem.content.length === 0 ? (
+                    <Alert>
+                        <AlertDescription>Keine Vertretungen für {data.class}</AlertDescription>
+                    </Alert>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="hover:bg-transparent dark:border-neutral-400">
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Stunde</TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Fach</TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Lehrer</TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Raum</TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Art</TableHead>
+                                    {currentItem.content.some(item => item.info) && (
+                                        <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Info</TableHead>
                                     )}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {currentItem.content.map((item, index) => (
+                                    <TableRow key={index} className="hover:bg-transparent dark:border-neutral-700">
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.position}</TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.subject}</TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.teacher}</TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.room}</TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.topic}</TableCell>
+                                        {item.info && (
+                                            <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.info}</TableCell>
+                                        )}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
+            </div>
+
+
+            <footer className="mt-40 mb-8 text-sm text-gray-500 dark:text-neutral-500 text-center space-y-2">
+                <div className="flex justify-center mt-8">
+                    <Button
+                        onClick={handleLogout}
+                        variant="ghost"
+                    >
+                        Logout
+                    </Button>
                 </div>
-            )}
-        </div>
+                <p className="flex flex-col gap-4">
+                    © 2022 - {new Date().getFullYear()} Pertermann. All Rights Reserved.
+                    <span>
+                        www.dsb.pertermann.de v.{new Date().getFullYear()}.
+                        {(new Date().getMonth() + 1).toString().padStart(2, '0')}
+                    </span>
+                    <span>
+                        Website built for Special Academic Project{' '}(
+                        <a
+                            href="https://github.com/PrtmPhlp/pertermann.de"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            className="hover:underline"
+                        >
+                            view source
+                        </a>)
+                    </span>
+                </p>
+
+            </footer>
+        </>
     );
 };
 
