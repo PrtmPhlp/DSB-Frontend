@@ -6,7 +6,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=https://api.home.pertermann.de
     ports:
-      - 3000:3000
+      - 3003:3000
 
     labels:
       - "traefik.enable=true"

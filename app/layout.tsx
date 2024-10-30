@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/className";
 
 import { Inter } from "next/font/google";
+import AnimateEnter from '@/components/AnimateEnter';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,7 +62,12 @@ export default function RootLayout({
         "py-4 dark:bg-neutral-900 sm:py-8",
         "motion-reduce:transform-none motion-reduce:transition-none",
       )}>
-        {children}
+        <AnimateEnter>
+          <>
+            {children}
+          </>
+        </AnimateEnter>
+
         {/* <Toaster /> */}
       </body>
     </html>

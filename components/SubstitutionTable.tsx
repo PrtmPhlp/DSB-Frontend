@@ -298,11 +298,6 @@ const SubstitutionTable: React.FC = () => {
                         </CardContent>
                     </Card>
                 )}
-                {/* <Button
-                    variant="outline"
-                    onClick={handleLogout}
-                    className="absolute top-4 right-4"
-                >Logout</Button> */}
                 <div className="overflow-x-auto">
                     <Pagination>
                         <PaginationContent>
@@ -380,9 +375,7 @@ const SubstitutionTable: React.FC = () => {
                     </div>
                 )}
             </div>
-
-
-            <footer className="mt-40 mb-8 text-sm text-gray-500 dark:text-neutral-500 text-center space-y-2">
+            <footer className="mt-20 mb-8 text-sm text-gray-500 dark:text-neutral-500 text-center space-y-2">
                 <div className="flex justify-center mt-8">
                     <Button
                         onClick={handleLogout}

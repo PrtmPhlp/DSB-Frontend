@@ -6,7 +6,7 @@ import React from 'react';
 
 // const inter = Inter({ subsets: ["latin"] });
 
-import SubstitutionTable from '../components/SubstitutionTable';
+import SubstitutionTable from '@/components/SubstitutionTable';
 
 export default function Home() {
   return (
