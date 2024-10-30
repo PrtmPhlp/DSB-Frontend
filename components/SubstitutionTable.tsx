@@ -16,6 +16,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface SubstitutionItem {
     content: {
@@ -37,32 +39,104 @@ interface SubstitutionData {
     substitution: SubstitutionItem[];
 }
 
+interface LoginResponse {
+    access_token: string;
+}
+
+// Remove the default value to make it clearer if it's not picking up the env var
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+if (!API_URL) {
+    console.warn('NEXT_PUBLIC_API_URL is not set');
+}
+
 const SubstitutionTable: React.FC = () => {
     const [data, setData] = useState<SubstitutionData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showSkeleton, setShowSkeleton] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
+    const [token, setToken] = useState<string | null>(null);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        // Load saved credentials from localStorage
+        const savedUsername = localStorage.getItem('username');
+        const savedPassword = localStorage.getItem('password');
+        if (savedUsername && savedPassword) {
+            setUsername(savedUsername);
+            setPassword(savedPassword);
+            // Attempt to login automatically
+            loginWithCredentials(savedUsername, savedPassword);
+        }
+    }, []);
+
+    const loginWithCredentials = async (username: string, password: string) => {
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+            const result: LoginResponse = await response.json();
+            setToken(result.access_token);
+            // Save credentials to localStorage
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            setError(null);
+        } catch (error) {
+            setError((error as Error).message);
+        }
+    };
+
+    const login = () => {
+        if (username && password) {
+            loginWithCredentials(username, password);
+        }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && username && password) {
+            login();
+        }
+    };
+
+    const isFormValid = username.trim() !== '' && password.trim() !== '';
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!token) return;
+
             try {
-                const response = await fetch('http://10.0.1.6:5555/api');
+                const response = await fetch(`${API_URL}/api/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Authentication failed');
+                }
                 const result = await response.json();
                 setData(result);
             } catch (error) {
                 setError((error as Error).message);
+                setToken(null); // Clear token on error
             }
         };
 
         // Hide the skeleton after 500ms
         const timer = setTimeout(() => {
             setShowSkeleton(false);
-        }, 200);
+        }, 300);
 
         fetchData();
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [token]);
 
     const headerContent = (
         <div className="py-6 md:py-12 dark:border-gray-800 flex justify-center">
@@ -107,6 +181,45 @@ const SubstitutionTable: React.FC = () => {
             </CardContent>
         </Card>
     );
+
+    if (!token) {
+        return (
+            <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto dark:dark">
+                {headerContent}
+                <Card className="shadow-lg dark:bg-transparent dark:dark">
+                    <CardHeader className='dark:dark'>
+                        <CardTitle className='dark:dark'>Login</CardTitle>
+                    </CardHeader>
+                    <CardContent className="dark:dark">
+                        <div className="space-y-4 dark:dark">
+                            <Input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                            />
+                            <Input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                            />
+                            <Button onClick={login} disabled={!isFormValid}>Login</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+                {error && (
+                    <Alert variant="destructive">
+                        <Terminal className="h-4 w-4" />
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+            </div>
+        );
+    }
 
     if (showSkeleton) return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
