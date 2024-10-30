@@ -400,7 +400,7 @@ const SubstitutionTable: React.FC = () => {
                     <span>
                         Website built for Special Academic Project{' '}(
                         <a
-                            href="https://github.com/PrtmPhlp/pertermann.de"
+                            href="https://github.com/PrtmPhlp/dsbmobile"
                             rel="noopener noreferrer"
                             target="_blank"
                             className="hover:underline"
