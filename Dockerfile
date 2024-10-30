@@ -2,23 +2,34 @@ FROM oven/bun AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-
 WORKDIR /app
 
-# Install dependencies
+# Copy only files needed for installation
 COPY package.json bun.lockb ./
 RUN bun install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Disable telemetry during the build
+# Copy package.json first (needed for build script)
+COPY package.json ./
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy configuration files
+COPY next.config.js tsconfig.json postcss.config.mjs tailwind.config.js components.json ./
+
+# Copy application code
+COPY app ./app
+COPY components ./components
+COPY lib ./lib
+COPY public ./public
+COPY docker/scripts ./docker/scripts
+
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_API_URL=NEXT_PUBLIC_API_URL_PLACEHOLDER
 
 RUN bun run build
 
@@ -27,30 +38,21 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL=NEXT_PUBLIC_API_URL_PLACEHOLDER
 
-# Disable telemetry
-ENV NEXT_TELEMETRY_DISABLED=1
+# Create non-root user and set up directories
+RUN adduser --system --uid 1001 nextjs && \
+    mkdir .next && \
+    chown nextjs:bun .next
 
-RUN adduser --system --uid 1001 nextjs
-
+# Copy only the necessary files from builder
 COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:bun .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:bun /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:bun /app/.next/static ./.next/static
+COPY --from=builder /app/docker/scripts/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nextjs
 
-EXPOSE 3000
-
-ENV PORT=3000
-
-# Set hostname to localhost
-ENV HOSTNAME="0.0.0.0"
-
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["bun", "server.js"]

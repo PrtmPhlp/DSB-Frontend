@@ -1,0 +1,13 @@
+.git
+.gitignore
+node_modules
+.next
+README.md
+.env*
+docker/*
+!docker/scripts/docker-entrypoint.sh
+Dockerfile*
+compose.yaml
+*.bak
+*.old
+*.log

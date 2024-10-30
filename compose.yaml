@@ -2,21 +2,21 @@ services:
   dsb-frontend:
     container_name: dsb-frontend
     image: ghcr.io/prtmphlp/dsb-frontend:latest
-    build:
-      dockerfile: ./Dockerfile
+    build: .
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.home.pertermann.de
     ports:
-     - 3000:3000
+      - 3000:3000
 
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.uptime.rule=Host(`uptime.pertermann.de`)'
-      - 'traefik.http.routers.uptime.entrypoints=https'
-      - 'traefik.http.routers.uptime.tls=true'
-      - 'traefik.http.routers.uptime.middlewares=authelia@docker'
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`frontend.pertermann.de`)"
+      - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.frontend.middlewares=authelia@docker"
     networks:
       - proxy
 
 networks:
   proxy:
     external: true
-
