@@ -25,8 +25,10 @@ COPY next.config.js tsconfig.json postcss.config.mjs tailwind.config.js componen
 COPY app ./app
 COPY components ./components
 COPY lib ./lib
-COPY public ./public
 COPY docker/scripts ./docker/scripts
+
+# currently not used
+# COPY public ./public
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_PUBLIC_API_URL=NEXT_PUBLIC_API_URL_PLACEHOLDER
@@ -46,7 +48,9 @@ RUN adduser --system --uid 1001 nextjs && \
     chown nextjs:bun .next
 
 # Copy only the necessary files from builder
-COPY --from=builder /app/public ./public
+
+# currently not used
+# COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:bun /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:bun /app/.next/static ./.next/static
 COPY --from=builder /app/docker/scripts/docker-entrypoint.sh /usr/local/bin/

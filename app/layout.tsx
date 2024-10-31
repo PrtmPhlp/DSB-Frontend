@@ -5,7 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/className";
 
 import { Inter } from "next/font/google";
-import AnimateEnter from '@/components/AnimateEnter';
+import AnimateEnter from '@/components/ui/AnimateEnter';
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { TextShimmer } from '@/components/TextShimmer';
+import { TextShimmer } from '@/components/ui/TextShimmer';
 import React, { useEffect, useState } from 'react';
 import { Terminal } from "lucide-react"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -388,7 +388,7 @@ const SubstitutionTable: React.FC = () => {
                     © 2022 - {new Date().getFullYear()} Pertermann. All Rights Reserved.
                     <span>
                         www.dsb.pertermann.de v.{new Date().getFullYear()}.
-                        {(new Date().getMonth() + 1).toString().padStart(2, '0')}
+                        {(new Date().getMonth() + 1).toString().padStart(2, '0')}{' '}(<a href={API_URL} rel="noopener noreferrer" target="_blank" className="hover:underline">view api</a>)
                     </span>
                     <span>
                         Website built for Special Academic Project{' '}(
@@ -402,7 +402,6 @@ const SubstitutionTable: React.FC = () => {
                         </a>)
                     </span>
                 </p>
-
             </footer>
         </>
     );

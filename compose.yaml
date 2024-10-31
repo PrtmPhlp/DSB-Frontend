@@ -5,6 +5,7 @@ services:
     build: .
     environment:
       - NEXT_PUBLIC_API_URL=https://api.home.pertermann.de
+      #- NEXT_PUBLIC_API_URL=http://localhost:5555
     ports:
       - 3003:3000
 
