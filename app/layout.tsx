@@ -51,11 +51,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="de">
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL || ''} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_API_URL || ''} />
+      </head>
       <body className={cn(
         `${inter.className}`,
         "min-h-screen w-full",

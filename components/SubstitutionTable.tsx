@@ -1,10 +1,9 @@
 "use client";
 
-import { TextShimmer } from '@/components/ui/TextShimmer';
-import React, { useEffect, useState } from 'react';
-import { Terminal } from "lucide-react"
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
     Pagination,
     PaginationContent,
@@ -13,11 +12,12 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TextShimmer } from '@/components/ui/TextShimmer';
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Terminal } from "lucide-react";
+import React, { useEffect, useState } from 'react';
 
 interface SubstitutionItem {
     content: {
@@ -57,16 +57,18 @@ const SubstitutionTable: React.FC = () => {
     const [token, setToken] = useState<string | null>(null);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Load saved credentials from localStorage
         const savedUsername = localStorage.getItem('username');
         const savedPassword = localStorage.getItem('password');
         if (savedUsername && savedPassword) {
-            setUsername(savedUsername);
-            setPassword(savedPassword);
-            // Attempt to login automatically
+            setIsLoggingIn(true);
             loginWithCredentials(savedUsername, savedPassword);
+        } else {
+            setIsLoading(false);
         }
     }, []);
 
@@ -90,6 +92,11 @@ const SubstitutionTable: React.FC = () => {
             setError(null);
         } catch (error) {
             setError((error as Error).message);
+            // Clear stored credentials on error
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 
@@ -124,18 +131,20 @@ const SubstitutionTable: React.FC = () => {
                 setData(result);
             } catch (error) {
                 setError((error as Error).message);
-                setToken(null); // Clear token on error
+                setToken(null);
+            } finally {
+                setTimeout(() => {
+                    setShowSkeleton(false);
+                    setIsLoading(false);
+                }, 300);
             }
         };
 
-        // Hide the skeleton after 500ms
-        const timer = setTimeout(() => {
-            setShowSkeleton(false);
-        }, 300);
+        if (token) {
+            fetchData();
+        }
 
-        fetchData();
-
-        return () => clearTimeout(timer);
+        return () => {};
     }, [token]);
 
     const handleLogout = () => {
@@ -191,6 +200,15 @@ const SubstitutionTable: React.FC = () => {
     );
 
     if (!token) {
+        if (isLoggingIn) {
+            return (
+                <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+                    {headerContent}
+                    <CardSkeleton />
+                </div>
+            );
+        }
+
         return (
             <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto dark:dark">
                 {headerContent}
@@ -229,15 +247,14 @@ const SubstitutionTable: React.FC = () => {
         );
     }
 
-    if (showSkeleton) return (
-        <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
-            {headerContent}
-            <CardSkeleton />
-            {/* <Alert>
-                <AlertDescription>Loading...</AlertDescription>
-            </Alert> */}
-        </div>
-    );
+    if (isLoading || showSkeleton) {
+        return (
+            <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+                {headerContent}
+                <CardSkeleton />
+            </div>
+        );
+    }
 
     if (error) return (
         <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
@@ -252,12 +269,14 @@ const SubstitutionTable: React.FC = () => {
         </div>
     );
 
-    if (!data) return (
-        <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
-            {headerContent}
-            <Alert><AlertDescription>No data available</AlertDescription></Alert>
-        </div>
-    );
+    if (!data) {
+        return (
+            <div className="space-y-6 p-4 sm:p-6 max-w-4xl mx-auto">
+                {headerContent}
+                <Alert><AlertDescription>No data available</AlertDescription></Alert>
+            </div>
+        );
+    }
 
     const handlePrevious = () => {
         setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
@@ -347,26 +366,50 @@ const SubstitutionTable: React.FC = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow className="hover:bg-transparent dark:border-neutral-400">
-                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Stunde</TableHead>
-                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Fach</TableHead>
-                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Lehrer</TableHead>
-                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Raum</TableHead>
-                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Art</TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent" scope="col" id="position">
+                                        Stunde
+                                    </TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent" scope="col" id="subject">
+                                        Fach
+                                    </TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent" scope="col" id="teacher">
+                                        Lehrer
+                                    </TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent" scope="col" id="room">
+                                        Raum
+                                    </TableHead>
+                                    <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent" scope="col" id="type">
+                                        Art
+                                    </TableHead>
                                     {currentItem.content.some(item => item.info) && (
-                                        <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent">Info</TableHead>
+                                        <TableHead className="px-2 py-3 sm:px-4 hover:bg-transparent" scope="col" id="info">
+                                            Info
+                                        </TableHead>
                                     )}
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {currentItem.content.map((item, index) => (
                                     <TableRow key={index} className="hover:bg-transparent dark:border-neutral-700">
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.position}</TableCell>
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.subject}</TableCell>
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.teacher}</TableCell>
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.room}</TableCell>
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.topic}</TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="position">
+                                            {item.position}
+                                        </TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="subject">
+                                            {item.subject}
+                                        </TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="teacher">
+                                            {item.teacher}
+                                        </TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="room">
+                                            {item.room}
+                                        </TableCell>
+                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="type">
+                                            {item.topic}
+                                        </TableCell>
                                         {item.info && (
-                                            <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent">{item.info}</TableCell>
+                                            <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="info">
+                                                {item.info}
+                                            </TableCell>
                                         )}
                                     </TableRow>
                                 ))}
