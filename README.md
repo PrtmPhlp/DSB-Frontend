@@ -1,6 +1,6 @@
 # DSB Mobile Substitution Plan
 
-A modern web application built with Next.js for displaying school substitution plans using my custom [PyDSB API](https://github.com/PrtmPhlp/DSBMobile).
+A modern web application built with Next.js for displaying school substitution plans using my custom [Python DSBMobile API](https://github.com/PrtmPhlp/DSBMobile).
 ## Features
 
 - 🔐 Secure authentication system
