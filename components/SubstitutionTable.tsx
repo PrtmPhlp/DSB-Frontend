@@ -317,45 +317,47 @@ const SubstitutionTable: React.FC = () => {
                         </CardContent>
                     </Card>
                 )}
-                <div className="overflow-x-auto">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious onClick={handlePrevious} className="select-none">
-                                    Zurück
-                                </PaginationPrevious>
-                            </PaginationItem>
-                            {data.substitution.map((_, index) => {
-                                const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+                {data.substitution.length > 1 && (
+                    <div className="overflow-x-auto">
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious onClick={handlePrevious} className="select-none">
+                                        Zurück
+                                    </PaginationPrevious>
+                                </PaginationItem>
+                                {data.substitution.map((_, index) => {
+                                    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
-                                if (!isMobile || index < 4) {
-                                    return (
-                                        <PaginationItem key={index}>
-                                            <PaginationLink
-                                                onClick={() => setCurrentPage(index)}
-                                                isActive={currentPage === index}
-                                            >
-                                                {index + 1}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    );
-                                } else if (isMobile && index === 4) {
-                                    return (
-                                        <PaginationItem key={index}>
-                                            <PaginationLink>...</PaginationLink>
-                                        </PaginationItem>
-                                    );
-                                }
-                                return null;
-                            })}
-                            <PaginationItem>
-                                <PaginationNext onClick={handleNext} className="select-none">
-                                    Weiter
-                                </PaginationNext>
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
+                                    if (!isMobile || index < 4) {
+                                        return (
+                                            <PaginationItem key={index}>
+                                                <PaginationLink
+                                                    onClick={() => setCurrentPage(index)}
+                                                    isActive={currentPage === index}
+                                                >
+                                                    {index + 1}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        );
+                                    } else if (isMobile && index === 4) {
+                                        return (
+                                            <PaginationItem key={index}>
+                                                <PaginationLink>...</PaginationLink>
+                                            </PaginationItem>
+                                        );
+                                    }
+                                    return null;
+                                })}
+                                <PaginationItem>
+                                    <PaginationNext onClick={handleNext} className="select-none">
+                                        Weiter
+                                    </PaginationNext>
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
+                )}
 
                 {currentItem.content.length === 0 ? (
                     <Alert>
