@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import tailwindcssAnimate from "tailwindcss-animate";
+import tailwindcssHighlights from "tailwindcss-highlights";
 
 const config = {
   darkMode: ["media"],
@@ -59,7 +60,7 @@ const config = {
       },
     },
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [tailwindcssAnimate, tailwindcssHighlights],
 };
 
 export default config;

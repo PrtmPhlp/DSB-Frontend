@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   // ... andere Konfigurationen
   webpack: (config, { isServer }) => {
     if (!isServer) {

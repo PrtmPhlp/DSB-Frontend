@@ -106,7 +106,7 @@ const SubstitutionTable: React.FC = () => {
         }
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && username && password) {
             login();
         }
@@ -144,7 +144,7 @@ const SubstitutionTable: React.FC = () => {
             fetchData();
         }
 
-        return () => {};
+        return () => { };
     }, [token]);
 
     const handleLogout = () => {
@@ -223,14 +223,16 @@ const SubstitutionTable: React.FC = () => {
                                 placeholder="Username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                onKeyPress={handleKeyPress}
+                                onKeyDown={handleKeyPress}
+                                id="username"
                             />
                             <Input
                                 type="password"
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                onKeyPress={handleKeyPress}
+                                onKeyDown={handleKeyPress}
+                                id="password"
                             />
                             <Button onClick={login} disabled={!isFormValid}>Login</Button>
                         </div>
@@ -399,14 +401,18 @@ const SubstitutionTable: React.FC = () => {
                                         <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="subject">
                                             {item.subject}
                                         </TableCell>
-                                        <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="teacher">
-                                            {item.teacher}
+                                        <TableCell className={`px-2 py-3 sm:px-4 hover:bg-transparent ${item.teacher.includes('(') && item.teacher.includes(')') ? 'text-neutral-500' : ''}`} headers="teacher">
+                                            {item.teacher || "---"}
                                         </TableCell>
                                         <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="room">
                                             {item.room}
                                         </TableCell>
                                         <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="type">
-                                            {item.topic}
+                                            {item.topic === "Selbststudium" ? (
+                                                <span className="highlight dark:highlight-amber-800 highlight-amber-500 highlight-variant-1 highlight-spread-sm">{item.topic}</span>
+                                            ) : (
+                                                <span>{item.topic}</span>
+                                            )}
                                         </TableCell>
                                         {item.info && (
                                             <TableCell className="px-2 py-3 sm:px-4 hover:bg-transparent" headers="info">

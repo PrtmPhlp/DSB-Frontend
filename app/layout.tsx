@@ -57,8 +57,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL || ''} />
-        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_API_URL || ''} />
+        {/* <link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL || ''} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_API_URL || ''} /> */}
       </head>
       <body className={cn(
         `${inter.className}`,
