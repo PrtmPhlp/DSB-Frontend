@@ -82,7 +82,9 @@ const SubstitutionTable: React.FC = () => {
                 body: JSON.stringify({ username, password }),
             });
             if (!response.ok) {
-                throw new Error('Login failed');
+                const errorResponse = await response.json();
+                // Update the error message based on the API response
+                throw new Error(errorResponse.msg || 'Login failed');
             }
             const result: LoginResponse = await response.json();
             setToken(result.access_token);
