@@ -33,6 +33,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Toggle } from "@/components/ui/toggle";
 
 // Types
 interface SubstitutionContent {
@@ -85,6 +86,7 @@ const SubstitutionTable: React.FC = () => {
   const [openCombo, setOpenCombo] = useState(false);
   const [apiError] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showOnlyCancelled, setShowOnlyCancelled] = useState(false);
 
   // Memoized values
   const isFormValid = useMemo(() =>
@@ -162,17 +164,27 @@ const SubstitutionTable: React.FC = () => {
   const filteredContent = useMemo(() => {
     if (!currentItem?.content) return [];
 
-    if (!searchQuery.trim()) return currentItem.content;
+    let filtered = currentItem.content;
 
-    const query = searchQuery.toLowerCase();
-    return currentItem.content.filter(item =>
-      item.teacher.toLowerCase().includes(query) ||
-      item.room.toLowerCase().includes(query) ||
-      item.subject.toLowerCase().includes(query) ||
-      item.topic.toLowerCase().includes(query) ||
-      item.info.toLowerCase().includes(query)
-    );
-  }, [currentItem?.content, searchQuery]);
+    if (showOnlyCancelled) {
+      filtered = filtered.filter(item =>
+        item.topic === "Selbststudium" || item.topic === "Fällt aus"
+      );
+    }
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(item =>
+        item.teacher.toLowerCase().includes(query) ||
+        item.room.toLowerCase().includes(query) ||
+        item.subject.toLowerCase().includes(query) ||
+        item.topic.toLowerCase().includes(query) ||
+        item.info.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [currentItem?.content, searchQuery, showOnlyCancelled]);
 
   // Add error message helper
   const getErrorMessage = useCallback((error: ApiError) => {
@@ -561,7 +573,14 @@ const SubstitutionTable: React.FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-500 dark:text-neutral-400">
-                Letzte Änderung: {new Date(data.createdAt).toLocaleString()}
+                Letzte Änderung: {new Date(data.createdAt).toLocaleString("de-DE", {
+                  day: "numeric",
+                  month: "long",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: false,
+                })}
               </p>
             </CardContent>
           </Card>
@@ -620,13 +639,24 @@ const SubstitutionTable: React.FC = () => {
 
             {/* Search field */}
             <div className="w-full sm:flex-1 px-4 sm:px-0">
-              <Input
-                type="text"
-                placeholder="Suche nach Lehrer, Raum, Fach..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full border-gray-300 dark:border-neutral-700 rounded-md text-sm"
-              />
+              <div className="flex gap-4 items-center">
+                <Input
+                  type="text"
+                  placeholder="Suche nach Lehrer, Raum, Fach..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-md text-sm"
+                />
+                <Toggle
+                  variant="outline"
+                  pressed={showOnlyCancelled}
+                  onPressedChange={setShowOnlyCancelled}
+                  aria-label="Nur Ausfälle anzeigen"
+                  className="px-4 cursor-pointer"
+                >
+                  Ausfälle
+                </Toggle>
+              </div>
             </div>
           </div>
 
