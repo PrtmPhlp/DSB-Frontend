@@ -1,0 +1,28 @@
+.highlight {
+    isolation: isolate;
+    position: relative;
+    --tw-highlight-color: black;
+    --tw-highlight-spread-t: 0;
+    --tw-highlight-spread-b: 0;
+    --tw-highlight-spread-l: 0;
+    --tw-highlight-spread-r: 0;
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/1.svg);
+    --tw-highlight-z-index: -1;
+}
+
+.highlight::after {
+    content: "";
+    position: absolute;
+    z-index: var(--tw-highlight-z-index);
+    top: var(--tw-highlight-spread-t);
+    bottom: var(--tw-highlight-spread-b);
+    left: var(--tw-highlight-spread-l);
+    right: var(--tw-highlight-spread-r);
+    background-color: var(--tw-highlight-color);
+    mask-image: var(--tw-highlight-variant);
+    -webkit-mask-image: var(--tw-highlight-variant);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+}

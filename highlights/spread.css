@@ -1,0 +1,135 @@
+/* Spread classes for highlights */
+.highlight-spread-sm {
+    --tw-highlight-spread-t: -4px;
+    --tw-highlight-spread-b: -4px;
+    --tw-highlight-spread-l: -4px;
+    --tw-highlight-spread-r: -4px;
+}
+
+.highlight-spread-md {
+    --tw-highlight-spread-t: -8px;
+    --tw-highlight-spread-b: -8px;
+    --tw-highlight-spread-l: -8px;
+    --tw-highlight-spread-r: -8px;
+}
+
+.highlight-spread-lg {
+    --tw-highlight-spread-t: -12px;
+    --tw-highlight-spread-b: -12px;
+    --tw-highlight-spread-l: -12px;
+    --tw-highlight-spread-r: -12px;
+}
+
+.highlight-spread-xl {
+    --tw-highlight-spread-t: -16px;
+    --tw-highlight-spread-b: -16px;
+    --tw-highlight-spread-l: -16px;
+    --tw-highlight-spread-r: -16px;
+}
+
+/* X-axis spread */
+.highlight-spread-x-sm {
+    --tw-highlight-spread-l: -4px;
+    --tw-highlight-spread-r: -4px;
+}
+
+.highlight-spread-x-md {
+    --tw-highlight-spread-l: -8px;
+    --tw-highlight-spread-r: -8px;
+}
+
+.highlight-spread-x-lg {
+    --tw-highlight-spread-l: -12px;
+    --tw-highlight-spread-r: -12px;
+}
+
+.highlight-spread-x-xl {
+    --tw-highlight-spread-l: -16px;
+    --tw-highlight-spread-r: -16px;
+}
+
+/* Y-axis spread */
+.highlight-spread-y-sm {
+    --tw-highlight-spread-t: -4px;
+    --tw-highlight-spread-b: -4px;
+}
+
+.highlight-spread-y-md {
+    --tw-highlight-spread-t: -8px;
+    --tw-highlight-spread-b: -8px;
+}
+
+.highlight-spread-y-lg {
+    --tw-highlight-spread-t: -12px;
+    --tw-highlight-spread-b: -12px;
+}
+
+.highlight-spread-y-xl {
+    --tw-highlight-spread-t: -16px;
+    --tw-highlight-spread-b: -16px;
+}
+
+/* Individual directions */
+.highlight-spread-t-sm {
+    --tw-highlight-spread-t: -4px;
+}
+
+.highlight-spread-t-md {
+    --tw-highlight-spread-t: -8px;
+}
+
+.highlight-spread-t-lg {
+    --tw-highlight-spread-t: -12px;
+}
+
+.highlight-spread-t-xl {
+    --tw-highlight-spread-t: -16px;
+}
+
+.highlight-spread-b-sm {
+    --tw-highlight-spread-b: -4px;
+}
+
+.highlight-spread-b-md {
+    --tw-highlight-spread-b: -8px;
+}
+
+.highlight-spread-b-lg {
+    --tw-highlight-spread-b: -12px;
+}
+
+.highlight-spread-b-xl {
+    --tw-highlight-spread-b: -16px;
+}
+
+.highlight-spread-l-sm {
+    --tw-highlight-spread-l: -4px;
+}
+
+.highlight-spread-l-md {
+    --tw-highlight-spread-l: -8px;
+}
+
+.highlight-spread-l-lg {
+    --tw-highlight-spread-l: -12px;
+}
+
+.highlight-spread-l-xl {
+    --tw-highlight-spread-l: -16px;
+}
+
+.highlight-spread-r-sm {
+    --tw-highlight-spread-r: -4px;
+}
+
+.highlight-spread-r-md {
+    --tw-highlight-spread-r: -8px;
+}
+
+.highlight-spread-r-lg {
+    --tw-highlight-spread-r: -12px;
+}
+
+.highlight-spread-r-xl {
+    --tw-highlight-spread-r: -16px;
+}

@@ -1,37 +1,29 @@
-FROM oven/bun AS base
+FROM oven/bun:1 AS base
 
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
 
-# Copy only files needed for installation
-COPY package.json bun.lockb ./
+# Copy package files
+COPY package.json bun.lock* ./
+
 RUN bun install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-
-# Copy package.json first (needed for build script)
-COPY package.json ./
-
-# Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-# Copy configuration files
-COPY next.config.js tsconfig.json postcss.config.mjs tailwind.config.js components.json ./
-
-# Copy application code
-COPY app ./app
-COPY components ./components
-COPY lib ./lib
-COPY docker/scripts ./docker/scripts
-
-# currently not used
-# COPY public ./public
-
+# Next.js collects anonymous telemetry data about general usage
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line to disable telemetry at build time
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NEXT_PUBLIC_API_URL=NEXT_PUBLIC_API_URL_PLACEHOLDER
+
+# Set a default API URL for build time
+# This will be overridden at runtime by the environment variable from docker-compose
+ARG NEXT_PUBLIC_API_URL=https://api.home.pertermann.de
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 RUN bun run build
 
@@ -40,23 +32,23 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=NEXT_PUBLIC_API_URL_PLACEHOLDER
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create non-root user and set up directories
-RUN adduser --system --uid 1001 nextjs && \
-    mkdir .next && \
-    chown nextjs:bun .next
+# Don't run production as root
+RUN addgroup --system --gid 1001 bun || true
+RUN adduser --system --uid 1001 nextjs || true
+RUN chown -R nextjs:bun /app || true
 
-# Copy only the necessary files from builder
-
-# currently not used
-# COPY --from=builder /app/public ./public
+# Copy necessary folders
+COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:bun /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:bun /app/.next/static ./.next/static
-COPY --from=builder /app/docker/scripts/docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nextjs
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["bun", "server.js"]
+EXPOSE 3000
+
+ENV PORT=3000
+
+# Use Bun to run the server.js output from Next.js
+CMD ["bun", "server.js"] 

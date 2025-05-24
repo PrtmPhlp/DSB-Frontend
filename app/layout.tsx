@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-// import localFont from "next/font/local";
-import "./globals.css";
-// import { Toaster } from "@/components/ui/toaster"
-import { cn } from "@/lib/className";
-
 import { Inter } from "next/font/google";
-import AnimateEnter from '@/components/ui/AnimateEnter';
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { cn } from "@/lib/className";
+import { ThemeProvider } from "@/components/theme-provider";
+import AnimateEnter from "@/components/AnimateEnter";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+});
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Vertretungsplan",
@@ -26,53 +26,53 @@ export const metadata: Metadata = {
   keywords: ["Vertretungsplan", "Schule", "Unterricht", "Stundenplan"],
   authors: [{ name: "PrtmPhlp", url: "https://pertermann.de" }],
   openGraph: {
-    description: 'Tinkerer.',
+    description: "Tinkerer.",
     images: [
       {
-        alt: 'Pertermann',
+        alt: "Pertermann",
         height: 1080,
-        url: 'https://pertermann.de/static/images/og.png',
+        url: "https://pertermann.de/static/images/og.png",
         width: 1920,
       },
     ],
-    locale: 'de_DE',
-    siteName: 'Pertermann.de',
-    title: 'Pertermann.de',
-    type: 'website',
-    url: 'https://pertermann.de',
+    locale: "de_DE",
+    siteName: "Pertermann.de",
+    title: "Pertermann.de",
+    type: "website",
+    url: "https://pertermann.de",
   },
-  publisher: 'Pertermann',
+  publisher: "Pertermann",
   twitter: {
-    card: 'summary_large_image',
-    site: '@prtmphlp',
-    title: 'Pertermann',
+    card: "summary_large_image",
+    site: "@prtmphlp",
+    title: "Pertermann",
   },
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        {/* <link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL || ''} />
-        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_API_URL || ''} /> */}
-      </head>
-      <body className={cn(
-        `${inter.className}`,
-        "min-h-screen w-full",
-        "py-4 dark:bg-neutral-900 sm:py-8",
-        "motion-reduce:transform-none motion-reduce:transition-none",
-      )}>
-        <AnimateEnter>
-          <>
-            {children}
-          </>
-        </AnimateEnter>
-
-        {/* <Toaster /> */}
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        className={cn(
+          `${inter.className} ${geistSans.variable} ${geistMono.variable} antialiased`,
+          "min-h-screen w-full",
+          "py-4 dark:bg-neutral-900 sm:py-8",
+          "motion-reduce:transform-none motion-reduce:transition-none",
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AnimateEnter>{children}</AnimateEnter>
+        </ThemeProvider>
       </body>
     </html>
   );

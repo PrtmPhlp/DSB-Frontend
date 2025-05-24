@@ -1,0 +1,48 @@
+/* Variant classes for highlights */
+.highlight-variant-1 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/1.svg);
+}
+
+.highlight-variant-2 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/2.svg);
+}
+
+.highlight-variant-3 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/3.svg);
+}
+
+.highlight-variant-4 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/4.svg);
+}
+
+.highlight-variant-5 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/5.svg);
+}
+
+.highlight-variant-6 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/6.svg);
+}
+
+.highlight-variant-7 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/7.svg);
+}
+
+.highlight-variant-8 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/8.svg);
+}
+
+.highlight-variant-9 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/9.svg);
+}
+
+.highlight-variant-10 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/10.svg);
+}
+
+.highlight-variant-11 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/11.svg);
+}
+
+.highlight-variant-12 {
+    --tw-highlight-variant: url(https://raw.githubusercontent.com/jln13x/tailwindcss-highlights/main/highlights/12.svg);
+}

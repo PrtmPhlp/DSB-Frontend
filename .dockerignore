@@ -1,13 +1,41 @@
+# Git
 .git
 .gitignore
+
+# Node.js
 node_modules
+npm-debug.log
+yarn-error.log
+
+# Bun
+bun.debug.log
+.bunfig.toml
+
+# Next.js
 .next
-README.md
-.env*
-docker/*
-!docker/scripts/docker-entrypoint.sh
-Dockerfile*
-compose.yaml
-*.bak
-*.old
+out
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE specific files
+.idea
+.vscode
+*.sw?
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Docker specific files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+logs
 *.log

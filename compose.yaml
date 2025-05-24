@@ -1,23 +1,18 @@
 services:
-  dsb-frontend:
-    container_name: dsb-frontend
-    image: ghcr.io/prtmphlp/dsb-frontend:latest
-    build: .
-    environment:
-      - NEXT_PUBLIC_API_URL=https://api.home.pertermann.de
-      #- NEXT_PUBLIC_API_URL=http://localhost:5555
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://api.home.pertermann.de
+    restart: always
     ports:
-      - 3003:3000
-
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`frontend.pertermann.de`)"
-      - "traefik.http.routers.frontend.entrypoints=https"
-      - "traefik.http.routers.frontend.tls=true"
-      - "traefik.http.routers.frontend.middlewares=authelia@docker"
-    networks:
-      - proxy
-
-networks:
-  proxy:
-    external: true
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.home.pertermann.de # Replace with your API URL
+    healthcheck:
+      test: ["CMD", "bun", "--fetch", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
