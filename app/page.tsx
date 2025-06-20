@@ -223,12 +223,10 @@ const SubstitutionTable: React.FC = () => {
       setToken('authenticated');
       setError(null);
 
-      // Save credentials to localStorage
-      localStorage.setItem('username', username);
-      localStorage.setItem('password', password);
+      // Erfolgreich eingeloggt - setze isLoading zurück
+      setIsLoggingIn(false);
     } catch (error) {
       setError(error as ApiError);
-    } finally {
       setIsLoggingIn(false);
     }
   }, []);
@@ -252,10 +250,7 @@ const SubstitutionTable: React.FC = () => {
       setToken(null);
       setUsername('');
       setPassword('');
-
-      // Clear saved credentials
-      localStorage.removeItem('username');
-      localStorage.removeItem('password');
+      setCurrentPage(0);
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -274,18 +269,35 @@ const SubstitutionTable: React.FC = () => {
     return `${day}.${month}.${year}`;
   }, []);
 
-  // Effects
-  useEffect(() => {
-    const savedUsername = localStorage.getItem('username');
-    const savedPassword = localStorage.getItem('password');
+  // Neue Funktion zur Überprüfung des Authentifizierungsstatus
+  const checkAuthStatus = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/auth/status');
 
-    if (savedUsername && savedPassword) {
-      setIsLoggingIn(true);
-      loginWithCredentials(savedUsername, savedPassword);
-    } else {
+      if (response.ok) {
+        const data = await response.json();
+        if (data.authenticated) {
+          setToken('authenticated');
+          setError(null);
+        } else {
+          setToken(null);
+        }
+      } else {
+        setToken(null);
+      }
+    } catch (error) {
+      console.error('Auth status check failed:', error);
+      setToken(null);
+    } finally {
       setIsLoading(false);
     }
-  }, [loginWithCredentials]);
+  }, []);
+
+  // Effects
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   useEffect(() => {
     if (!token) return;
