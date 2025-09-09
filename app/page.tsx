@@ -15,7 +15,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TextShimmer } from '@/components/TextShimmer';
-import { cn } from "@/lib/className";
+import { cn } from "@/lib/utils";
 import { Terminal, Check, ChevronsUpDown } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
