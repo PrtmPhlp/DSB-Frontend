@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/className";
+import { cn } from "@/lib/utils";
 
 export const SkeletonCard: React.FC = () => (
     <Card className="shadow-lg dark:bg-transparent">

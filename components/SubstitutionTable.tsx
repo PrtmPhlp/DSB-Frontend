@@ -9,7 +9,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { cn } from "@/lib/className";
+import { cn } from "@/lib/utils";
 import React, { useCallback } from 'react';
 
 interface SubstitutionContent {

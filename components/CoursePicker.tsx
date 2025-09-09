@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/className";
+import { cn } from "@/lib/utils";
 import {
     Command,
     CommandEmpty,
